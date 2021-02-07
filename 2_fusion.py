@@ -9,6 +9,7 @@ import ntpath
 # Import shipped libraries.
 import librender
 import mcubes as libmcubes
+import exporter
 import cv2
 
 use_gpu = True
@@ -260,7 +261,7 @@ class Fusion:
         common.makedir(self.options.depth_dir)
 
         files = self.read_directory(self.options.in_dir)
-        timer = common.Timer()
+        timer = common.WallTimer()
         Rs = self.get_views()
 
         for filepath in files:
@@ -281,7 +282,7 @@ class Fusion:
         common.makedir(self.options.out_dir)
 
         files = self.read_directory(self.options.depth_dir)
-        timer = common.Timer()
+        timer = common.WallTimer()
         Rs = self.get_views()
 
         for filepath in files:
@@ -300,7 +301,7 @@ class Fusion:
             vertices -= 0.5
 
             off_file = os.path.join(self.options.out_dir, ntpath.basename(filepath)[:-3])
-            libmcubes.export_off(vertices, triangles, off_file)
+            exporter.export_off(vertices, triangles, off_file)
             print('[Data] wrote %s (%f seconds)' % (off_file, timer.elapsed()))
 
 if __name__ == '__main__':

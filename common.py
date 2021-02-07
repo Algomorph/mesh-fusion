@@ -9,7 +9,8 @@ import h5py
 import math
 import numpy as np
 
-def write_hdf5(file, tensor, key = 'tensor'):
+
+def write_hdf5(file, tensor, key='tensor'):
     """
     Write a simple tensor, i.e. numpy array ,to HDF5.
 
@@ -33,10 +34,11 @@ def write_hdf5(file, tensor, key = 'tensor'):
             if len(chunks) > 4:
                 chunks[4] = 1
 
-    h5f.create_dataset(key, data = tensor, chunks = tuple(chunks), compression = 'gzip')
+    h5f.create_dataset(key, data=tensor, chunks=tuple(chunks), compression='gzip')
     h5f.close()
 
-def read_hdf5(file, key = 'tensor'):
+
+def read_hdf5(file, key='tensor'):
     """
     Read a tensor, i.e. numpy array, from HDF5.
 
@@ -57,6 +59,7 @@ def read_hdf5(file, key = 'tensor'):
     h5f.close()
 
     return tensor
+
 
 def write_off(file, vertices, faces):
     """
@@ -87,7 +90,8 @@ def write_off(file, vertices, faces):
             assert len(face) == 4, 'faces need to have 3 vertices, but found %d (%s)' % (len(face), file)
 
             for i in range(len(face)):
-                assert face[i] >= 0 and face[i] < num_vertices, 'invalid vertex index %d (of %d vertices) (%s)' % (face[i], num_vertices, file)
+                assert face[i] >= 0 and face[i] < num_vertices, 'invalid vertex index %d (of %d vertices) (%s)' % (
+                face[i], num_vertices, file)
 
                 fp.write(str(face[i]))
                 if i < len(face) - 1:
@@ -97,6 +101,7 @@ def write_off(file, vertices, faces):
 
         # add empty line to be sure
         fp.write('\n')
+
 
 def read_off(file):
     """
@@ -163,10 +168,12 @@ def read_off(file):
 
             face = [int(index) for index in face]
 
-            assert face[0] == len(face) - 1, 'face should have %d vertices but as %d (%s)' % (face[0], len(face) - 1, file)
+            assert face[0] == len(face) - 1, 'face should have %d vertices but as %d (%s)' % (
+            face[0], len(face) - 1, file)
             assert face[0] == 3, 'only triangular meshes supported (%s)' % file
             for index in face:
-                assert index >= 0 and index < num_vertices, 'vertex %d (of %d vertices) does not exist (%s)' % (index, num_vertices, file)
+                assert index >= 0 and index < num_vertices, 'vertex %d (of %d vertices) does not exist (%s)' % (
+                index, num_vertices, file)
 
             assert len(face) > 1
 
@@ -175,6 +182,7 @@ def read_off(file):
         return vertices, faces
 
     assert False, 'could not open %s' % file
+
 
 def write_obj(file, vertices, faces):
     """
@@ -202,7 +210,8 @@ def write_obj(file, vertices, faces):
             fp.write('f ')
 
             for i in range(len(face)):
-                assert face[i] >= 0 and face[i] < num_vertices, 'invalid vertex index %d (of %d vertices) (%s)' % (face[i], num_vertices, file)
+                assert face[i] >= 0 and face[i] < num_vertices, 'invalid vertex index %d (of %d vertices) (%s)' % (
+                face[i], num_vertices, file)
 
                 # face indices are 1-based
                 fp.write(str(face[i] + 1))
@@ -213,6 +222,7 @@ def write_obj(file, vertices, faces):
 
         # add empty line to be sure
         fp.write('\n')
+
 
 def read_obj(file):
     """
@@ -246,40 +256,45 @@ def read_obj(file):
                 vertices.append([float(parts[1]), float(parts[2]), float(parts[3])])
             elif parts[0] == 'f':
                 assert len(parts) == 4, \
-                    'face should be of the form f v1/vt1/vn1 v2/vt2/vn2 v2/vt2/vn2, but found %d parts (%s) instead (%s)' % (len(parts), line, file)
+                    'face should be of the form f v1/vt1/vn1 v2/vt2/vn2 v2/vt2/vn2, but found %d parts (%s) instead (%s)' % (
+                    len(parts), line, file)
 
                 components = parts[1].split('/')
                 assert len(components) >= 1 and len(components) <= 3, \
-                   'face component should have the forms v, v/vt or v/vt/vn, but found %d components instead (%s)' % (len(components), file)
+                    'face component should have the forms v, v/vt or v/vt/vn, but found %d components instead (%s)' % (
+                    len(components), file)
                 assert components[0].strip() != '', \
                     'face component is empty (%s)' % file
                 v1 = int(components[0])
 
                 components = parts[2].split('/')
                 assert len(components) >= 1 and len(components) <= 3, \
-                    'face component should have the forms v, v/vt or v/vt/vn, but found %d components instead (%s)' % (len(components), file)
+                    'face component should have the forms v, v/vt or v/vt/vn, but found %d components instead (%s)' % (
+                    len(components), file)
                 assert components[0].strip() != '', \
                     'face component is empty (%s)' % file
                 v2 = int(components[0])
 
                 components = parts[3].split('/')
                 assert len(components) >= 1 and len(components) <= 3, \
-                    'face component should have the forms v, v/vt or v/vt/vn, but found %d components instead (%s)' % (len(components), file)
+                    'face component should have the forms v, v/vt or v/vt/vn, but found %d components instead (%s)' % (
+                    len(components), file)
                 assert components[0].strip() != '', \
                     'face component is empty (%s)' % file
                 v3 = int(components[0])
 
-                #assert v1 != v2 and v2 != v3 and v3 != v2, 'degenerate face detected: %d %d %d (%s)' % (v1, v2, v3, file)
+                # assert v1 != v2 and v2 != v3 and v3 != v2, 'degenerate face detected: %d %d %d (%s)' % (v1, v2, v3, file)
                 if v1 == v2 or v2 == v3 or v1 == v3:
                     print('[Info] skipping degenerate face in %s' % file)
                 else:
-                    faces.append([v1 - 1, v2 - 1, v3 - 1]) # indices are 1-based!
+                    faces.append([v1 - 1, v2 - 1, v3 - 1])  # indices are 1-based!
             else:
                 assert False, 'expected either vertex or face but got line: %s (%s)' % (line, file)
 
         return vertices, faces
 
     assert False, 'could not open %s' % file
+
 
 def makedir(dir):
     """
@@ -292,12 +307,13 @@ def makedir(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
 
+
 class Mesh:
     """
     Represents a mesh.
     """
 
-    def __init__(self, vertices = [[]], faces = [[]]):
+    def __init__(self, vertices=[[]], faces=[[]]):
         """
         Construct a mesh from vertices and faces.
 
@@ -307,10 +323,10 @@ class Mesh:
         :type faces: [[int]] fo rnumpy.ndarray
         """
 
-        self.vertices = np.array(vertices, dtype = float)
+        self.vertices = np.array(vertices, dtype=float)
         """ (numpy.ndarray) Vertices. """
 
-        self.faces = np.array(faces, dtype = int)
+        self.faces = np.array(faces, dtype=int)
         """ (numpy.ndarray) Faces. """
 
         assert self.vertices.shape[1] == 3
@@ -324,8 +340,8 @@ class Mesh:
         :rtype: (float, float, float), (float, float, float)
         """
 
-        min = [0]*3
-        max = [0]*3
+        min = [0] * 3
+        max = [0] * 3
 
         for i in range(3):
             min[i] = np.min(self.vertices[:, i])
@@ -485,7 +501,7 @@ class Mesh:
         :type filepath: str
         """
 
-        faces = np.ones((self.faces.shape[0], 4), dtype = int)*3
+        faces = np.ones((self.faces.shape[0], 4), dtype=int) * 3
         faces[:, 1:4] = self.faces[:, :]
 
         write_off(filepath, self.vertices.tolist(), faces.tolist())
@@ -514,9 +530,10 @@ class Mesh:
 
         write_obj(filepath, self.vertices.tolist(), self.faces.tolist())
 
-class Timer:
+
+class WallTimer:
     """
-    Simple wrapper for time.clock().
+    Simple wrapper for time.time().
     """
 
     def __init__(self):
@@ -524,7 +541,7 @@ class Timer:
         Initialize and start timer.
         """
 
-        self.start = time.clock()
+        self.start = time.time()
         """ (float) Seconds. """
 
     def reset(self):
@@ -532,7 +549,7 @@ class Timer:
         Reset timer.
         """
 
-        self.start = time.clock()
+        self.start = time.time()
 
     def elapsed(self):
         """
@@ -542,4 +559,4 @@ class Timer:
         :rtype: float
         """
 
-        return (time.clock() - self.start)
+        return (time.time() - self.start)

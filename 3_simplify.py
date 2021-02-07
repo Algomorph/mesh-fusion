@@ -15,7 +15,18 @@ class Simplification:
 
         parser = self.get_parser()
         self.options = parser.parse_args()
-        self.simplification_script = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'simplification.mlx')
+
+        # to determine meshlab version, run meshlabserver and look at second line of the output
+        # TODO: a conditional that automatically picks the correct script path based on output of meshlabserver
+
+        # For Meshlab 2020-07 + use:
+        self.simplification_script = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                  "simplification_meshlab-2020-07.mlx")
+
+        # For older versions of meshlab, use:
+        # self.simplification_script = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'simplification.mlx')
+
+
 
     def get_parser(self):
         """
